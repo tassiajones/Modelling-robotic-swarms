@@ -1,0 +1,53 @@
+p = @(t) 0.00001 *t^2;
+k_8 = 0.05;
+k_9 = 0.03;
+k_10 = 0.02;
+k_2 = 0.01;
+k_4 = 0.05;
+k_13 = 0.01;
+k_14 = 0.02;
+k_15 = 0.01;
+
+Uvec = [];
+Dvec = [];
+Cvec = [];
+Fvec = [];
+Uvec(1)= 90 ;
+Dvec(1)= 10;
+Cvec(1)= 0;
+Fvec(1) = 0; 
+
+for t = 1:100
+    dUdt = p(t)*((-k_9*Dvec(t)*Uvec(t)) - (k_2*Uvec(t).^2) - (k_4*Cvec(t)*Uvec(t)) - (k_14*Fvec(t)*Uvec(t)));
+    dDdt = p(t)*(-k_8*Cvec(t)*Dvec(t) - k_9*Uvec(t)*Dvec(t) - 2*k_10*Dvec(t).^2 + k_2*Uvec(t).^2 - k_13*Dvec(t)*Fvec(t));
+    dCdt = p(t)*(k_9*Dvec(t)*Uvec(t) + k_10*Dvec(t).^2 + k_4*Cvec(t)*Uvec(t) +k_13*Dvec(t)*Fvec(t) +k_14*Fvec(t)*Uvec(t) +k_15*(Fvec(t))^2);
+    dFdt = p(t)*(k_8*Cvec(t)*Dvec(t) + k_9*Dvec(t)*Uvec(t) + k_10*(Dvec(t))^2 - k_15*(Fvec(t))^2);
+    U = Uvec(t) + dUdt;
+    D = Dvec(t) + dDdt;
+    C = Cvec(t) + dCdt;
+    F = Fvec(t) + dFdt;
+    Uvec = [Uvec U];
+    Dvec = [Dvec D];
+    Cvec = [Cvec C];
+    Fvec = [Fvec F];
+    total_pop = Uvec(t) + Dvec(t) + Cvec(t) + Fvec(t)
+end 
+figure
+T = linspace(0, 101, 101);
+plot(T, Cvec, 'r-');
+hold  on 
+plot(T, Dvec, 'b-');
+plot(T, Uvec, 'g-');
+plot(T, Fvec, 'k-');
+xlim([0,101]);
+ylim([0,100]);
+xlabel('Time')
+ylabel('Number of Robots')
+hold off 
+
+legend('Chasing', 'Damaged', 'Undamaged', 'Fleeing')
+
+final_undamaged = Uvec(100)
+final_fleeing = Fvec(100)
+final_damaged = Dvec(100)
+final_chasing = Cvec(100)
