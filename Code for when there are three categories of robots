@@ -1,0 +1,46 @@
+p = @(t) 0.00001 *t^2;
+k_1 = 0.01;
+k_2 = 0.01;
+k_3 = 0.01;
+k_4 = 0.01;
+
+Uvec = [];
+Dvec = [];
+Cvec = [];
+
+Uvec(1)= 90 ;
+Dvec(1)= 10;
+Cvec(1)= 0;
+ 
+
+for t = 1:100
+    dUdt = p(t)*((-k_1*Dvec(t)*Uvec(t)) - (k_2*Uvec(t).^2) - (k_3*Cvec(t)*Uvec(t)));
+    dDdt = p(t)*(- k_4*Dvec(t).^2 + k_2*Uvec(t).^2);
+    dCdt = p(t)*(k_1*Dvec(t)*Uvec(t) + k_4*Dvec(t).^2 + k_3*Cvec(t)*Uvec(t));
+    U = Uvec(t) + dUdt;
+    D = Dvec(t) + dDdt;
+    C = Cvec(t) + dCdt;
+   
+    Uvec = [Uvec U];
+    Dvec = [Dvec D];
+    Cvec = [Cvec C];
+    
+    total_pop = Uvec(t) + Dvec(t) + Cvec(t) 
+end 
+figure
+T = linspace(0, 101, 101);
+plot(T, Cvec, 'r-');
+hold  on 
+plot(T, Dvec, 'b-');
+plot(T, Uvec, 'g-');
+xlim([0,101]);
+ylim([0,100]);
+xlabel('Time')
+ylabel('Number of Robots')
+hold off 
+
+legend('Chasing', 'Damaged', 'Undamaged')
+
+final_undamaged = Uvec(100)
+final_damaged = Dvec(100)
+final_chasing = Cvec(100)
