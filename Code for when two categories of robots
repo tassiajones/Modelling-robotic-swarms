@@ -1,0 +1,35 @@
+p = @(t) 0.00001 *t^2;
+k_1 = 0.01;
+k_2 = 0.02;
+
+
+Uvec = [];
+Dvec = [];
+
+Uvec(1)= 90 ;
+Dvec(1)= 10; 
+
+for t = 1:100
+    dUdt = p(t)*((-k_1*Dvec(t)*Uvec(t)) - (k_2*Uvec(t).^2));
+    dDdt = p(t)*(k_1*Uvec(t)*Dvec(t) + k_2*Uvec(t).^2);
+    U = Uvec(t) + dUdt;
+    D = Dvec(t) + dDdt;
+    Uvec = [Uvec U];
+    Dvec = [Dvec D];
+    total_pop = Uvec(t) + Dvec(t);
+end 
+figure
+T = linspace(0, 101, 101);
+hold  on 
+plot(T, Dvec, 'b-');
+plot(T, Uvec, 'g-');
+xlim([0,101]);
+ylim([0,100]);
+xlabel('Time')
+ylabel('Number of Robots')
+hold off 
+
+legend('Damaged', 'Undamaged')
+
+final_undamaged = Uvec(100)
+final_damaged = Dvec(100)
